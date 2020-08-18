@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'ExpandablePicker_Example' do
+  pod 'ExpandablePicker', :path => '../'
+
+  target 'ExpandablePicker_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
