@@ -8,8 +8,9 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ExpandablePicker'
-  s.version          = '0.1.0'
-  s.summary          = 'A short description of ExpandablePicker.'
+  s.version          = '1.0.0'
+  s.summary          = 'Pick from a list of items.'
+  s.description      = 'A picker selects an item from a list of items.  This picker alows for and shows heirarchical relationships within the picker and allows selection of any item in the list.'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
