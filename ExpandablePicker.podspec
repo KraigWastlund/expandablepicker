@@ -25,13 +25,15 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/KraigWastlund/ExpandablePicker.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '13.0'
 
   s.source_files = 'ExpandablePicker/Classes/**/*'
   
-  # s.resource_bundles = {
-  #   'ExpandablePicker' => ['ExpandablePicker/Assets/*.png']
-  # }
+#   s.resource_bundles = {
+#     'ExpandablePicker' => ['ExpandablePicker/Assets/*.png']
+#   }
+   
+   s.resources = "ExpandablePicker/Assets/*.xcassets"
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'

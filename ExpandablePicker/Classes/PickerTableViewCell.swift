@@ -31,14 +31,34 @@ class PickerTableViewCell: UITableViewCell {
         imageWidthConstraint.constant = PickerTableViewCell.imageDim
         imageIndentConstraint.constant = CGFloat(indent) * PickerTableViewCell.indentPadding
         
-        if indent > 0 && rootIndented == false && pickerData.indentImageNormal != nil {
+        if indent > 0 && ((rootIndented == false && pickerData.indentImageNormal != nil) || (PickerStyle.indentType == .arrow)) {
             imageIndentConstraint.constant -= PickerTableViewCell.imageDim
         }
         
-        if let image = pickerData.indentImageNormal {
-            let colors = PickerStyle.indentImageTintColors()
-            indentImageView.image = image.withTintColor(colors[indent % colors.count])
+        var image: UIImage?
+        switch PickerStyle.indentType {
+        case .line:
+            image = UIImage.indent()
+        case .arrow:
+            if indent == 0 { break }
+            image = UIImage.return()
+        case .box:
+            image = UIImage.boxClosed()
+        case .none:
+            break
+        case .custom:
+            guard let i = pickerData.indentImageNormal else { assert(false, "If `custom` indent type is chosen, picker data must have normal image."); return }
+            image = i
+        }
+        
+        if let i = image {
+            if let tintColors = PickerStyle.indentImageTintColors() {
+                indentImageView.image = i.withTintColor(tintColors[indent % tintColors.count])
+            } else {
+                indentImageView.image = i
+            }
         } else {
+            indentImageView.image = nil
             imageWidthConstraint.constant = 0
         }
     }
@@ -65,19 +85,37 @@ class PickerTableViewCell: UITableViewCell {
                 }
             }
             
-            if let imageNormal = pickerData.indentImageNormal, let imageExpanded = pickerData.indentImageExpanded {
-                
+            var closedImage: UIImage?
+            var openImage: UIImage?
+            if PickerStyle.indentType == .box {
+                closedImage = UIImage.boxClosed()
+                openImage = UIImage.boxOpen()
+            } else if let imageNormal = pickerData.indentImageNormal, let imageExpanded = pickerData.indentImageExpanded {
+                closedImage = imageNormal
+                openImage = imageExpanded
+            }
+            
+            if let c = closedImage, let o = openImage {
                 UIView.animate(withDuration: 0.15, animations: { [weak self] in
                     guard let s = self else { return }
                     s.indentImageView.alpha = 0.0
                 }) { [weak self] (complete) in
                     guard let s = self else { return }
-                    let colors = PickerStyle.indentImageTintColors()
-                    if newValue == .right {
-                        s.indentImageView.image = imageNormal.withTintColor(colors[s.pickerData.indent % colors.count])
+                    if let colors = PickerStyle.indentImageTintColors() {
+                        if newValue == .right {
+                            s.indentImageView.image = c.withTintColor(colors[s.pickerData.indent % colors.count])
+                        } else {
+                            s.indentImageView.image = o.withTintColor(colors[s.pickerData.indent % colors.count])
+                        }
                     } else {
-                        s.indentImageView.image = imageExpanded.withTintColor(colors[s.pickerData.indent % colors.count])
+                        // no tint
+                        if newValue == .right {
+                            s.indentImageView.image = c
+                        } else {
+                            s.indentImageView.image = o
+                        }
                     }
+                    
                     UIView.animate(withDuration: 0.15) { [weak self] in
                         guard let s = self else { return }
                         s.indentImageView.alpha = 1.0
@@ -123,7 +161,7 @@ class PickerTableViewCell: UITableViewCell {
         indentImageView.clipsToBounds = true
         
         chevronButton.translatesAutoresizingMaskIntoConstraints = false
-        chevronButton.setImage(#imageLiteral(resourceName: "chevron").withTintColor(traitCollection.userInterfaceStyle == .light ? PickerStyle.chevronButtonTintColorLight() : PickerStyle.chevronButtonTintColorDark()), for: .normal)
+        chevronButton.setImage(UIImage.chevron().withTintColor(traitCollection.userInterfaceStyle == .light ? PickerStyle.chevronButtonTintColorLight() : PickerStyle.chevronButtonTintColorDark()), for: .normal)
         chevronButton.imageView!.contentMode = .scaleAspectFit
         chevronButton.imageView!.clipsToBounds = true
         chevronButton.imageEdgeInsets = UIEdgeInsets(top: PickerTableViewCell.buttonInset, left: PickerTableViewCell.buttonInset, bottom: PickerTableViewCell.buttonInset, right: PickerTableViewCell.buttonInset)
@@ -134,7 +172,7 @@ class PickerTableViewCell: UITableViewCell {
         contentView.addSubview(chevronButton)
         
         let views = [ "image": indentImageView, "label": label, "button": chevronButton ]
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:[image][label]-[button(\(PickerTableViewCell.buttonWidth))]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:[image]-[label]-[button(\(PickerTableViewCell.buttonWidth))]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[image(\(PickerTableViewCell.imageDim))]", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[button(\(PickerTableViewCell.buttonWidth))]", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
         contentView.addConstraint(NSLayoutConstraint.init(item: indentImageView, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0.0))

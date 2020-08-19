@@ -8,9 +8,34 @@
 
 import UIKit
 
+extension UIImage {
+    
+    static let bundle = Bundle(for: PickerViewController.self)
+    
+    static func boxClosed() -> UIImage {
+        return UIImage(named: "box_closed", in: bundle, compatibleWith: nil)!
+    }
+    
+    static func boxOpen() -> UIImage {
+        return UIImage(named: "box_open", in: bundle, compatibleWith: nil)!
+    }
+    
+    static func chevron() -> UIImage {
+        return UIImage(named: "chevron", in: bundle, compatibleWith: nil)!
+    }
+    
+    static func indent() -> UIImage {
+        return UIImage(named: "indent", in: bundle, compatibleWith: nil)!
+    }
+    
+    static func `return`() -> UIImage {
+        return UIImage(named: "return", in: bundle, compatibleWith: nil)!
+    }
+}
+
 extension UINavigationController {
     
-    func pushViewController(viewController: UIViewController, animated: Bool, completion: @escaping (() -> Void)) {
+    public func pushViewController(viewController: UIViewController, animated: Bool, completion: @escaping (() -> Void)) {
         pushViewController(viewController, animated: animated)
 
         if let coordinator = transitionCoordinator, animated {
@@ -22,7 +47,7 @@ extension UINavigationController {
         }
     }
 
-    func popViewController(animated: Bool, completion: @escaping (() -> Void)) {
+    public func popViewController(animated: Bool, completion: @escaping (() -> Void)) {
         popViewController(animated: animated)
 
         if let coordinator = transitionCoordinator, animated {
@@ -37,7 +62,7 @@ extension UINavigationController {
 
 extension UIViewController {
     
-    var isModal: Bool {
+    public var isModal: Bool {
         
         let presentingIsModal = presentingViewController != nil
         let presentingIsNavigation = navigationController?.presentingViewController?.presentedViewController == navigationController

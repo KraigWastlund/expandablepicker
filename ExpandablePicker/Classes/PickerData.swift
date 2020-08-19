@@ -8,8 +8,9 @@
 
 import UIKit
 
-struct PickerDataSource {
-    var data = [PickerData]()
+public struct PickerDataSource {
+    
+    public var data = [PickerData]()
     
     func visibleData() -> [PickerData] {
         return data.filter { $0.visible == true }
@@ -39,7 +40,7 @@ struct PickerDataSource {
     }
 }
 
-class PickerData: Equatable {
+public class PickerData: Equatable {
     
     func copy(with zone: NSZone? = nil) -> PickerData {
         let copy = PickerData(id: id, title: title, parentId: parentId, indentImageNormal: indentImageNormal, indentImageExpanded: indentImageExpanded)
@@ -52,11 +53,11 @@ class PickerData: Equatable {
     }
     
     
-    static func == (lhs: PickerData, rhs: PickerData) -> Bool {
+    public static func == (lhs: PickerData, rhs: PickerData) -> Bool {
         return lhs.id == rhs.id
     }
     
-    let id: String
+    public let id: String
     let title: String
     let parentId: String?
     var indentImageNormal: UIImage?
@@ -65,7 +66,7 @@ class PickerData: Equatable {
     var row: Int = -1
     var indent: Int = -1
     
-    init(id: String, title: String, parentId: String?, indentImageNormal: UIImage? = nil, indentImageExpanded: UIImage? = nil) {
+    public init(id: String, title: String, parentId: String?, indentImageNormal: UIImage? = nil, indentImageExpanded: UIImage? = nil) {
         self.id = id
         self.title = title
         self.parentId = parentId

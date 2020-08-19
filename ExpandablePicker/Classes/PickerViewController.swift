@@ -8,26 +8,26 @@
 
 import UIKit
 
-protocol PickerProtocol {
+public protocol PickerProtocol {
     func didSelectPickerData(with id: String, pvc: PickerViewController)
 }
 
-class PickerViewController: UIViewController, UISearchResultsUpdating {
+public class PickerViewController: UIViewController, UISearchResultsUpdating {
     
     let tableView = UITableView(frame: CGRect.zero, style: .grouped)
-    var datasource = PickerDataSource()
+    public var datasource = PickerDataSource()
     private var _data: [PickerData]?
-    var delegate: PickerProtocol?
+    public var delegate: PickerProtocol?
     
     private var _selectedData: PickerData?
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         setup()
     }
     
-    func set(title:String, subtitle:String?) {
+    public func set(title:String, subtitle:String?) {
         set(epTitle: title, epSubTitle: subtitle)
     }
     
@@ -159,7 +159,7 @@ class PickerViewController: UIViewController, UISearchResultsUpdating {
         assert(data.filter({ $0.row == -1 }).count == 0)
     }
     
-    func updateSearchResults(for searchController: UISearchController) {
+    public func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text, !text.isEmpty else {
             if let ds = _data {
                 datasource.data = ds
@@ -200,15 +200,15 @@ class PickerViewController: UIViewController, UISearchResultsUpdating {
 
 extension PickerViewController: UITableViewDataSource, UITableViewDelegate {
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return datasource.visibleData().count
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return PickerTableViewCell.cellHeight
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? PickerTableViewCell else { assert(false, "something bad happened"); return UITableViewCell() }
         
         let data = datasource.visibleData()[indexPath.row]
@@ -232,7 +232,7 @@ extension PickerViewController: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let data = datasource.visibleData()[indexPath.row]
         tableView.deselectRow(at: indexPath, animated: true)
         if let sc = navigationItem.searchController, sc.isActive == true {
@@ -249,7 +249,7 @@ extension PickerViewController: UITableViewDataSource, UITableViewDelegate {
 
 extension PickerViewController: UISearchControllerDelegate {
     
-    func didDismissSearchController(_ searchController: UISearchController) {
+    public func didDismissSearchController(_ searchController: UISearchController) {
         guard let d = _selectedData else { assert(false, "How did I get here without having `_selectedData`?"); return }
         delegate?.didSelectPickerData(with: d.id, pvc: self)
     }
