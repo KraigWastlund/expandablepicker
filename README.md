@@ -5,6 +5,22 @@
 [![License](https://img.shields.io/cocoapods/l/ExpandablePicker.svg?style=flat)](https://cocoapods.org/pods/ExpandablePicker)
 [![Platform](https://img.shields.io/cocoapods/p/ExpandablePicker.svg?style=flat)](https://cocoapods.org/pods/ExpandablePicker)
 
+## High Points
+- Select any item in the list.
+- Conform to delegate and get notified when something is picked.
+- Expand and Contract based on `parentId`.
+- Sorting happens for you (alphabetically ascending).
+- Can be presented Modall/Push.
+- Color of Chevron Button can be customized.
+- Pick from three built in styling options:
+  - Line
+  - Arrow (no indent image on root level)
+  - None (no indentation image)
+  - Custom (pass your own image)
+- Custom indentation type can have an optional 'expanded image' and animation will result.
+- Colors of indentation image can be customized for each level of indentation.
+- Works in Dark mode and Light.
+
 ## Example
 
 Motion-
@@ -83,24 +99,13 @@ extension ViewController: PickerProtocol {
         
         guard let d = myPretendData.filter({ $0.id == id }).first else { return }
         
-        if pvc.isModal {
-            pvc.dismiss(animated: true) { [weak self] in
-                guard let s = self else { return }
-                let alert = UIAlertController(title: "Selected", message: "\(d.title) was selected.", preferredStyle: .alert)
-                s.present(alert, animated: true, completion: nil)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    alert.dismiss(animated: true, completion: nil)
-                }
+        pvc.dismiss(animated: true) { [weak self] in
+            guard let s = self else { return }
+            let alert = UIAlertController(title: "Selected", message: "\(d.title) was selected.", preferredStyle: .alert)
+            s.present(alert, animated: true, completion: nil)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                alert.dismiss(animated: true, completion: nil)
             }
-        } else {
-            navigationController?.popViewController(animated: true, completion: { [weak self] in
-                guard let s = self else { return }
-                let alert = UIAlertController(title: "Selected", message: "\(d.title) was selected.", preferredStyle: .alert)
-                s.present(alert, animated: true, completion: nil)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    alert.dismiss(animated: true, completion: nil)
-                }
-            })
         }
     }
 }
