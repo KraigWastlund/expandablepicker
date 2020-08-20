@@ -9,12 +9,12 @@
 
 Motion-
 :-------------------------:|
-![picture](https://raw.githubusercontent.com/FishbowlInventory/SuperButton/master/ReadmeResources/example_150_half.gif) |
+![picture](https://raw.githubusercontent.com/FishbowlInventory/SuperButton/master/ReadmeResources/1.gif) |
 
 
-Three Buttons | Four Buttons | Five Buttons | Six Buttons | Seven Buttons
+Line Indent Type | Arrow Indent Type | None Indent Type | Custom Indent Type | Search
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
-![picture](https://raw.githubusercontent.com/FishbowlInventory/ExpandablePicker/master/ReadmeResources/3.png)  |  ![picture](https://raw.githubusercontent.com/FishbowlInventory/ExpandablePicker/master/ReadmeResources/4.png)  |  ![picture](https://raw.githubusercontent.com/FishbowlInventory/ExpandablePicker/master/ReadmeResources/5.png)  |  ![picture](https://raw.githubusercontent.com/FishbowlInventory/ExpandablePicker/master/ReadmeResources/6.png)  |  ![picture](https://raw.githubusercontent.com/FishbowlInventory/ExpandablePicker/master/ReadmeResources/7.png) 
+![picture](https://raw.githubusercontent.com/FishbowlInventory/ExpandablePicker/master/ReadmeResources/1.png)  |  ![picture](https://raw.githubusercontent.com/FishbowlInventory/ExpandablePicker/master/ReadmeResources/2.png)  |  ![picture](https://raw.githubusercontent.com/FishbowlInventory/ExpandablePicker/master/ReadmeResources/3.png)  |  ![picture](https://raw.githubusercontent.com/FishbowlInventory/ExpandablePicker/master/ReadmeResources/4.png)  |  ![picture](https://raw.githubusercontent.com/FishbowlInventory/ExpandablePicker/master/ReadmeResources/5.png) 
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 

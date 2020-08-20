@@ -55,7 +55,7 @@ class ViewController: UIViewController {
 
         // vanilla
         let vc = PickerViewController()
-        vc.set(title: "Vanilla", subtitle: nil)
+        vc.set(title: "Line Indent Type", subtitle: "Presented Modally")
         vc.datasource.data = datasource()
         vc.delegate = self
         let nc = UINavigationController(rootViewController: vc)
@@ -72,7 +72,7 @@ class ViewController: UIViewController {
         // root has no image
         let vc = PickerViewController()
         vc.delegate = self
-        vc.title = "No Root"
+        vc.set(title: "Arrow Indent Type", subtitle: "Presented as Push")
         vc.datasource.data = datasource()
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -86,7 +86,7 @@ class ViewController: UIViewController {
         // no indent images at all
         let vc = PickerViewController()
         vc.delegate = self
-        vc.set(title: "No Indent", subtitle: "Here's a really long sub title just for funzies.")
+        vc.set(title: "None Indent Type", subtitle: "Presented as Push")
         vc.datasource.data = datasource(rootImageNormal: nil, childImageNormal: nil)
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -100,7 +100,7 @@ class ViewController: UIViewController {
         // no indent images at all
         let vc = PickerViewController()
         vc.delegate = self
-        vc.set(title: "No Indent", subtitle: "Here's a really long sub title just for funzies.")
+        vc.set(title: "Custom Indent Type", subtitle: "Animating Indent Image")
         let normal = #imageLiteral(resourceName: "box_closed")
         let expanded = #imageLiteral(resourceName: "box_open")
         vc.datasource.data = datasource(rootImageNormal: normal, rootImageExpanded: expanded, childImageNormal: normal, childImageExpanded: expanded)
@@ -152,7 +152,8 @@ extension ViewController: PickerProtocol {
     
     func didSelectPickerData(with id: String, pvc: PickerViewController) {
         
-        guard let d = myPretendData.filter({ $0.id == id }).first else { return }
+        // guard let d = myPretendData.filter({ $0.id == id }).first else { return }
+        let d = Project(id: id, title: id, parentId: nil)
         
         if pvc.isModal {
             pvc.dismiss(animated: true) { [weak self] in
