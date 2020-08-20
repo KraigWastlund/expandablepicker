@@ -26,6 +26,7 @@ class PickerTableViewCell: UITableViewCell {
     static let buttonInset: CGFloat = 26
     static let indentPadding: CGFloat = 24
     
+    
     func set(indent: Int, rootIndented: Bool) {
         
         imageWidthConstraint.constant = PickerTableViewCell.imageDim
@@ -42,8 +43,6 @@ class PickerTableViewCell: UITableViewCell {
         case .arrow:
             if indent == 0 { break }
             image = UIImage.return()
-        case .box:
-            image = UIImage.boxClosed()
         case .none:
             break
         case .custom:
@@ -87,10 +86,7 @@ class PickerTableViewCell: UITableViewCell {
             
             var closedImage: UIImage?
             var openImage: UIImage?
-            if PickerStyle.indentType == .box {
-                closedImage = UIImage.boxClosed()
-                openImage = UIImage.boxOpen()
-            } else if let imageNormal = pickerData.indentImageNormal, let imageExpanded = pickerData.indentImageExpanded {
+            if let imageNormal = pickerData.indentImageNormal, let imageExpanded = pickerData.indentImageExpanded {
                 closedImage = imageNormal
                 openImage = imageExpanded
             }
@@ -108,7 +104,7 @@ class PickerTableViewCell: UITableViewCell {
                             s.indentImageView.image = o.withTintColor(colors[s.pickerData.indent % colors.count])
                         }
                     } else {
-                        // no tint
+                        // no tint for images
                         if newValue == .right {
                             s.indentImageView.image = c
                         } else {
@@ -172,7 +168,7 @@ class PickerTableViewCell: UITableViewCell {
         contentView.addSubview(chevronButton)
         
         let views = [ "image": indentImageView, "label": label, "button": chevronButton ]
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:[image]-[label]-[button(\(PickerTableViewCell.buttonWidth))]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:[image][label]-[button(\(PickerTableViewCell.buttonWidth))]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[image(\(PickerTableViewCell.imageDim))]", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[button(\(PickerTableViewCell.buttonWidth))]", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
         contentView.addConstraint(NSLayoutConstraint.init(item: indentImageView, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0.0))

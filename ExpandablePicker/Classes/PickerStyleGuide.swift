@@ -12,7 +12,6 @@ public enum PickerIndentType {
     case none
     case line
     case arrow
-    case box
     case custom
 }
 

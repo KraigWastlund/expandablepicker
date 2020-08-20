@@ -12,14 +12,6 @@ extension UIImage {
     
     static let bundle = Bundle(for: PickerViewController.self)
     
-    static func boxClosed() -> UIImage {
-        return UIImage(named: "box_closed", in: bundle, compatibleWith: nil)!
-    }
-    
-    static func boxOpen() -> UIImage {
-        return UIImage(named: "box_open", in: bundle, compatibleWith: nil)!
-    }
-    
     static func chevron() -> UIImage {
         return UIImage(named: "chevron", in: bundle, compatibleWith: nil)!
     }
