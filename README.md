@@ -9,7 +9,7 @@
 
 Motion-
 :-------------------------:|
-![picture](https://raw.githubusercontent.com/FishbowlInventory/SuperButton/master/ReadmeResources/1.gif) |
+![picture](https://raw.githubusercontent.com/FishbowlInventory/ExpandablePicker/master/ReadmeResources/1.gif) |
 
 
 Line Indent Type | Arrow Indent Type | None Indent Type | Custom Indent Type | Search
@@ -23,11 +23,11 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Installation
 
-SuperButton is available through [CocoaPods](https://cocoapods.org). To install
+ExpandablePicker is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'SuperButton'
+pod 'ExpandablePicker'
 ```
 
 ## Usage
