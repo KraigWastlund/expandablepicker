@@ -12,7 +12,7 @@
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		64541BC624EDBFE600F9E23F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 64541BC524EDBFE600F9E23F /* Assets.xcassets */; };
-		64BAB68724EC839C00A099C3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64BAB68624EC839C00A099C3 /* ViewController.swift */; };
+		64541BCA24EF0C6C00F9E23F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64541BC924EF0C6C00F9E23F /* ViewController.swift */; };
 		64BAB68924EC83B900A099C3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 64BAB68824EC83B900A099C3 /* Main.storyboard */; };
 		C5009BD223F043140284840B /* Pods_ExpandablePicker_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D735413105D782AC4F637CB7 /* Pods_ExpandablePicker_Example.framework */; };
 /* End PBXBuildFile section */
@@ -39,7 +39,7 @@
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		64541BC524EDBFE600F9E23F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		64BAB68624EC839C00A099C3 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = ../../../ExpandablePicker_orig/ExpandablePicker/ViewController.swift; sourceTree = "<group>"; };
+		64541BC924EF0C6C00F9E23F /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		64BAB68824EC83B900A099C3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		900D5DAB94FA85F76CEEE8D0 /* Pods-ExpandablePicker_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExpandablePicker_Tests.debug.xcconfig"; path = "Target Support Files/Pods-ExpandablePicker_Tests/Pods-ExpandablePicker_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		C6179F0250A5C2EBDE6ECCE3 /* ExpandablePicker.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = ExpandablePicker.podspec; path = ../ExpandablePicker.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -103,11 +103,11 @@
 			isa = PBXGroup;
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
-				64BAB68624EC839C00A099C3 /* ViewController.swift */,
-				64BAB68824EC83B900A099C3 /* Main.storyboard */,
-				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
-				607FACD31AFB9204008FA782 /* Supporting Files */,
 				64541BC524EDBFE600F9E23F /* Assets.xcassets */,
+				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
+				64BAB68824EC83B900A099C3 /* Main.storyboard */,
+				607FACD31AFB9204008FA782 /* Supporting Files */,
+				64541BC924EF0C6C00F9E23F /* ViewController.swift */,
 			);
 			name = "Example for ExpandablePicker";
 			path = ExpandablePicker;
@@ -331,7 +331,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				64BAB68724EC839C00A099C3 /* ViewController.swift in Sources */,
+				64541BCA24EF0C6C00F9E23F /* ViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
