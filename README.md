@@ -1,6 +1,6 @@
 # ExpandablePicker
 
-[![CI Status](https://img.shields.io/travis/FishbowlInventory/ExpandablePicker.svg?style=flat)](https://travis-ci.org/KraigWastlund/ExpandablePicker)
+[![CI Status](https://img.shields.io/travis/FishbowlInventory/ExpandablePicker.svg?style=flat)](https://travis-ci.org/FishbowlInventory/ExpandablePicker)
 [![Version](https://img.shields.io/cocoapods/v/ExpandablePicker.svg?style=flat)](https://cocoapods.org/pods/ExpandablePicker)
 [![License](https://img.shields.io/cocoapods/l/ExpandablePicker.svg?style=flat)](https://cocoapods.org/pods/ExpandablePicker)
 [![Platform](https://img.shields.io/cocoapods/p/ExpandablePicker.svg?style=flat)](https://cocoapods.org/pods/ExpandablePicker)

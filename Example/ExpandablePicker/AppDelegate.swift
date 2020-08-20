@@ -3,7 +3,7 @@
 //  ExpandablePicker
 //
 //  Created by KraigWastlund on 08/18/2020.
-//  Copyright (c) 2020 KraigWastlund. All rights reserved.
+//  Copyright (c) 2020 Fishbowl Inventory. All rights reserved.
 //
 
 import UIKit

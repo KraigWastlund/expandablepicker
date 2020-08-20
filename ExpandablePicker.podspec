@@ -19,11 +19,11 @@ Pod::Spec.new do |s|
 #   * Write the description between the DESC delimiters below.
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
-  s.homepage         = 'https://github.com/KraigWastlund/ExpandablePicker'
+  s.homepage         = 'https://github.com/FishbowlInventory/ExpandablePicker'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'KraigWastlund' => 'kraigwastlund@gmail.com' }
-  s.source           = { :git => 'https://github.com/KraigWastlund/ExpandablePicker.git', :tag => s.version.to_s }
+  s.author           = { 'FishbowlInventory' => ' development@fishbowlinventory.com' }
+  s.source           = { :git => 'https://github.com/FishbowlInventory/ExpandablePicker.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '13.0'
