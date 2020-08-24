@@ -52,6 +52,16 @@ extension UINavigationController {
     }
 }
 
+extension UIColor {
+    static func ios13LabelColor() -> UIColor {
+        if UIScreen.main.traitCollection.userInterfaceStyle == .light {
+            return .darkText
+        } else {
+            return .lightText
+        }
+    }
+}
+
 extension UIViewController {
     
     public var isModal: Bool {
@@ -73,7 +83,7 @@ extension UIViewController {
         let titleLabel = UILabel(frame: CGRect(x: 0, y: variableY, width: 0, height: 0))
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.backgroundColor = .clear
-        titleLabel.textColor = .label
+        titleLabel.textColor = UIColor.ios13LabelColor()
         titleLabel.font = .systemFont(ofSize: 17 * EPSizeManager.shared().multiplier, weight: .bold)
         titleLabel.text = title
         titleLabel.textAlignment = .center

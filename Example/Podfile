@@ -1,4 +1,5 @@
 use_frameworks!
+platform :ios, '12.0'
 
 target 'ExpandablePicker_Example' do
   pod 'ExpandablePicker', :path => '../'

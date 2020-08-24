@@ -52,7 +52,12 @@ class PickerTableViewCell: UITableViewCell {
         
         if let i = image {
             if let tintColors = PickerStyle.indentImageTintColors() {
-                indentImageView.image = i.withTintColor(tintColors[indent % tintColors.count])
+                if #available(iOS 13, *) {
+                    indentImageView.image = i.withTintColor(tintColors[indent % tintColors.count])
+                } else {
+                        indentImageView.image = i.withRenderingMode(.alwaysTemplate)
+                        indentImageView.tintColor = tintColors[indent % tintColors.count]
+                }
             } else {
                 indentImageView.image = i
             }
@@ -98,10 +103,20 @@ class PickerTableViewCell: UITableViewCell {
                 }) { [weak self] (complete) in
                     guard let s = self else { return }
                     if let colors = PickerStyle.indentImageTintColors() {
-                        if newValue == .right {
-                            s.indentImageView.image = c.withTintColor(colors[s.pickerData.indent % colors.count])
+                        if #available(iOS 13, *) {
+                            if newValue == .right {
+                                s.indentImageView.image = c.withTintColor(colors[s.pickerData.indent % colors.count])
+                            } else {
+                                s.indentImageView.image = o.withTintColor(colors[s.pickerData.indent % colors.count])
+                            }
                         } else {
-                            s.indentImageView.image = o.withTintColor(colors[s.pickerData.indent % colors.count])
+                            if newValue == .right {
+                                s.indentImageView.image = c.withRenderingMode(.alwaysTemplate)
+                                s.indentImageView.tintColor = colors[s.pickerData.indent % colors.count]
+                            } else {
+                                s.indentImageView.image = o.withRenderingMode(.alwaysTemplate)
+                                s.indentImageView.tintColor = colors[s.pickerData.indent % colors.count]
+                            }
                         }
                     } else {
                         // no tint for images
@@ -157,7 +172,12 @@ class PickerTableViewCell: UITableViewCell {
         indentImageView.clipsToBounds = true
         
         chevronButton.translatesAutoresizingMaskIntoConstraints = false
-        chevronButton.setImage(UIImage.chevron().withTintColor(traitCollection.userInterfaceStyle == .light ? PickerStyle.chevronButtonTintColorLight() : PickerStyle.chevronButtonTintColorDark()), for: .normal)
+        if #available(iOS 13, *) {
+            chevronButton.setImage(UIImage.chevron().withTintColor(traitCollection.userInterfaceStyle == .light ? PickerStyle.chevronButtonTintColorLight() : PickerStyle.chevronButtonTintColorDark()), for: .normal)
+        } else {
+            chevronButton.setImage(UIImage.chevron().withRenderingMode(.alwaysTemplate), for: .normal)
+            chevronButton.imageView!.tintColor = traitCollection.userInterfaceStyle == .light ? PickerStyle.chevronButtonTintColorLight() : PickerStyle.chevronButtonTintColorDark()
+        }
         chevronButton.imageView!.contentMode = .scaleAspectFit
         chevronButton.imageView!.clipsToBounds = true
         chevronButton.imageEdgeInsets = UIEdgeInsets(top: PickerTableViewCell.buttonInset, left: PickerTableViewCell.buttonInset, bottom: PickerTableViewCell.buttonInset, right: PickerTableViewCell.buttonInset)

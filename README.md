@@ -10,7 +10,7 @@
 - Conform to delegate and get notified when something is picked.
 - Expand and Contract based on `parentId`.
 - Sorting happens for you (alphabetically ascending).
-- Can be presented Modall/Push.
+- Can be presented Modal/Push.
 - Color of Chevron Button can be customized.
 - Pick from three built in styling options:
   - Line
@@ -20,6 +20,7 @@
 - Custom indentation type can have an optional 'expanded image' and animation will result.
 - Colors of indentation image can be customized for each level of indentation.
 - Works in Dark mode and Light.
+- Works in landscape and portrait.
 
 ## Example
 
@@ -35,7 +36,7 @@ Line Indent Type | Arrow Indent Type | None Indent Type | Custom Indent Type | S
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
 ## Requirements
-- iOS > 13.0
+- iOS > 12.0
 
 ## Installation
 

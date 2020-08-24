@@ -57,6 +57,16 @@ public class PickerViewController: UIViewController, UISearchResultsUpdating {
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
         notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        
+        if #available(iOS 13, *) {
+            // do nothing :)
+        } else if self.isModal {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(closeViewController))
+        }
+    }
+    
+    @objc func closeViewController() {
+        self.dismiss(animated: true, completion: nil)
     }
     
     @objc func adjustForKeyboard(notification: Notification) {
