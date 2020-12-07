@@ -8,19 +8,19 @@
 import UIKit
 import AVFoundation
 
-public protocol MatchableAuthenticatedProtocol {
+protocol MatchableAuthenticatedProtocol {
     func codeWasSuccessfullyMatched(vc: UIViewController, code: String)
     func codeNotFound(vc: UIViewController, code: String)
 }
 
-public class QRCodeBarcodeEntryViewController: UIViewController {
+class QRCodeBarcodeEntryViewController: UIViewController {
     
     var captureSession: AVCaptureSession!
     var previewLayer: AVCaptureVideoPreviewLayer!
     let videoContainerView = VideoContainerView()
     let flashView = UIView()
     
-    public var delegate: MatchableAuthenticatedProtocol?
+    var delegate: MatchableAuthenticatedProtocol?
     var foundCount = 0
     
     var matchables = [String]()
