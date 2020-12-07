@@ -74,12 +74,12 @@ public class PickerViewController: UIViewController, UISearchResultsUpdating {
         #if targetEnvironment(simulator)
             print("SIMULATOR -- NO SCANNING POSSIBLE.")
             return
+        #else
+            let matchables = Array(datasource.data.compactMap({ $0.scanMatchables }).joined())
+            let barcodeScanner = QRCodeBarcodeEntryViewController(matchables: matchables, title: NSLocalizedString("Scan", comment: ""))
+            barcodeScanner.delegate = self
+            self.present(barcodeScanner, animated: true, completion: nil)
         #endif
-        
-        let matchables = Array(datasource.data.compactMap({ $0.scanMatchables }).joined())
-        let barcodeScanner = QRCodeBarcodeEntryViewController(matchables: matchables, title: NSLocalizedString("Scan", comment: ""))
-        barcodeScanner.delegate = self
-        self.present(barcodeScanner, animated: true, completion: nil)
     }
     
     @objc func closeViewController() {
