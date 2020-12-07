@@ -49,14 +49,32 @@ class ViewController: UIViewController {
 //        let nc = UINavigationController(rootViewController: vc)
 //        present(nc, animated: true, completion: nil)
         
+//        // set style
+//        PickerStyle.indentType = .line
+//        PickerStyle.set(indentImageTintColors: [.blue, .green, .yellow, .lightGray, .red])
+//
+//        // vanilla
+//        let vc = PickerViewController()
+//        vc.set(title: "Line Indent Type", subtitle: "Presented Modally")
+//        vc.datasource.data = datasource()
+//        vc.delegate = self
+//        let nc = UINavigationController(rootViewController: vc)
+//        present(nc, animated: true, completion: nil)
+        
         // set style
         PickerStyle.indentType = .line
         PickerStyle.set(indentImageTintColors: [.blue, .green, .yellow, .lightGray, .red])
+        
+        var data = [PickerData]()
+        for i in 0..<10 {
+            let title = "Super Long Long Long Name_\(i)"
+            data.append(PickerData(id: String(i), title: title, parentId: i == 0 ? nil : String(i - 1), scanMatchables: [title, String(i), "bob_\(i)"]))
+        }
 
         // vanilla
         let vc = PickerViewController()
         vc.set(title: "Line Indent Type", subtitle: "Presented Modally")
-        vc.datasource.data = datasource()
+        vc.datasource.data = data
         vc.delegate = self
         let nc = UINavigationController(rootViewController: vc)
         present(nc, animated: true, completion: nil)
@@ -173,6 +191,14 @@ extension ViewController: PickerProtocol {
                     alert.dismiss(animated: true, completion: nil)
                 }
             })
+        }
+    }
+    
+    func scanFailed(with id: String, pvc: PickerViewController) {
+        let alert = UIAlertController(title: "Failed", message: "\(id) failed to scan.", preferredStyle: .alert)
+        pvc.present(alert, animated: true, completion: nil)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            alert.dismiss(animated: true, completion: nil)
         }
     }
 }

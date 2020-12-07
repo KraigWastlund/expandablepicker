@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 public enum PickerIndentType {
     case none
@@ -27,6 +28,22 @@ public struct PickerStyle {
         return nil
     }
     
+    static func barcodeButtonTintColorDark() -> UIColor {
+        if let c = _chevronButtonTintColorDark {
+            return c
+        }
+        
+        return UIColor.systemBlue
+    }
+    
+    static func barcodeButtonTintColorLight() -> UIColor {
+        if let c = _chevronButtonTintColorLight {
+            return c
+        }
+        
+        return UIColor.systemBlue
+    }
+    
     static func chevronButtonTintColorDark() -> UIColor {
         if let c = _chevronButtonTintColorDark {
             return c
@@ -43,13 +60,26 @@ public struct PickerStyle {
         return UIColor.systemBlue
     }
     
-    public static func set(indentImageTintColors: [UIColor]? = nil, chevronButtonTintColorDark: UIColor? = nil, chevronButtonTintColorLight: UIColor? = nil) {
+    static func scannerCameraFacingPosition() -> AVCaptureDevice.Position {
+        if let c = _scannerCameraFacingPosition {
+            return c
+        }
+        return .back
+    }
+    
+    public static func set(indentImageTintColors: [UIColor]? = nil, chevronButtonTintColorDark: UIColor? = nil, chevronButtonTintColorLight: UIColor? = nil, barcodeButtonTintColorDark: UIColor? = nil, barcodeButtonTintColorLight: UIColor? = nil, scannerCameraFacingPosition: AVCaptureDevice.Position? = nil) {
         _indentImageTintColors = indentImageTintColors
         _chevronButtonTintColorDark = chevronButtonTintColorDark
         _chevronButtonTintColorLight = chevronButtonTintColorLight
+        _barcodeButtonTintColorLight = barcodeButtonTintColorLight
+        _barcodeButtonTintColorDark = barcodeButtonTintColorDark
+        _scannerCameraFacingPosition = scannerCameraFacingPosition
     }
     
     private static var _indentImageTintColors: [UIColor]?
+    private static var _barcodeButtonTintColorDark: UIColor?
+    private static var _barcodeButtonTintColorLight: UIColor?
     private static var _chevronButtonTintColorDark: UIColor?
     private static var _chevronButtonTintColorLight: UIColor?
+    private static var _scannerCameraFacingPosition: AVCaptureDevice.Position?
 }

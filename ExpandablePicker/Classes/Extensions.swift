@@ -16,6 +16,10 @@ extension UIImage {
         return UIImage(named: "chevron", in: bundle, compatibleWith: nil)!
     }
     
+    static func barcode() -> UIImage {
+        return UIImage(named: "barcode", in: bundle, compatibleWith: nil)!
+    }
+    
     static func indent() -> UIImage {
         return UIImage(named: "indent", in: bundle, compatibleWith: nil)!
     }
@@ -186,5 +190,33 @@ class EPSizeManager {
         } else {
             multiplier = ratio
         }
+    }
+}
+
+extension UIView {
+    
+    func blurView(style: UIBlurEffect.Style) {
+        var blurEffectView = UIVisualEffectView()
+        let blurEffect = UIBlurEffect(style: style)
+        blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = bounds
+        addSubview(blurEffectView)
+    }
+    
+    func startBlinking(completion: @escaping ()->Void) {
+        self.alpha = 0.2
+        UIView.animate(withDuration: 0.05, delay: 0.0, options: [.curveLinear, .repeat, .autoreverse], animations: {self.alpha = 1.0}, completion: nil)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+            completion()
+        })
+    }
+    
+    func stopBlinking() {
+        backgroundColor = .clear
+        self.layer.removeAllAnimations()
+    }
+    
+    class func fromNib<T: UIView>() -> T {
+        return Bundle.main.loadNibNamed(String(describing: T.self), owner: nil, options: nil)![0] as! T
     }
 }

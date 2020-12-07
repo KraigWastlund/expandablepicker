@@ -9,7 +9,8 @@
 import UIKit
 
 public protocol PickerProtocol {
-    func didSelectPickerData(with id: String, pvc: PickerViewController)
+    func didSelectPickerData(with code: String, pvc: PickerViewController)
+    func scanFailed(with code: String, pvc: PickerViewController)
 }
 
 public class PickerViewController: UIViewController, UISearchResultsUpdating {
@@ -32,6 +33,10 @@ public class PickerViewController: UIViewController, UISearchResultsUpdating {
     }
     
     private func setup() {
+        
+        if datasource.usesScanning() {
+            navigationItem.rightBarButtonItem = UIBarButtonItem.button(self, action: #selector(barcodePressed), image: UIImage.barcode())
+        }
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
@@ -60,9 +65,21 @@ public class PickerViewController: UIViewController, UISearchResultsUpdating {
         
         if #available(iOS 13, *) {
             // do nothing :)
-        } else if self.isModal {
+        } else if self.isModal {    
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(closeViewController))
         }
+    }
+    
+    @objc func barcodePressed() {
+        #if targetEnvironment(simulator)
+            print("SIMULATOR -- NO SCANNING POSSIBLE.")
+            return
+        #endif
+        
+        let matchables = Array(datasource.data.compactMap({ $0.scanMatchables }).joined())
+        let barcodeScanner = QRCodeBarcodeEntryViewController(matchables: matchables, title: NSLocalizedString("Scan", comment: ""))
+        barcodeScanner.delegate = self
+        self.present(barcodeScanner, animated: true, completion: nil)
     }
     
     @objc func closeViewController() {
@@ -187,7 +204,7 @@ public class PickerViewController: UIViewController, UISearchResultsUpdating {
         
         // filter by text
         let _ = datasource.data.map({ $0.visible = false }) // mark all as hidden
-        let _ = datasource.data.filter({ $0.title.lowercased().contains(text.lowercased()) }).map({ $0.visible = true }) // mark those that match search visible
+        let _ = datasource.data.filter({ $0.matches(matchable: text) }).map({ $0.visible = true }) // mark those that match search visible
         
         // mark all parents and grandparents visible to children who are visible
         let visibleChildren = datasource.data.filter({ $0.visible == true && $0.parentId != nil })
@@ -364,5 +381,65 @@ extension String {
         let to = range.upperBound.samePosition(in: utf16)!
         return NSRange(location: utf16.distance(from: utf16.startIndex, to: from),
                        length: utf16.distance(from: from, to: to))
+    }
+}
+
+extension UIBarButtonItem {
+    
+    fileprivate static func button(_ target: Any?, action: Selector, image: UIImage) -> UIBarButtonItem {
+        let button = UIButton(type: .system)
+        
+        if #available(iOS 13, *) {
+            button.setImage(image.withTintColor(UIView().traitCollection.userInterfaceStyle == .light ? PickerStyle.barcodeButtonTintColorLight() : PickerStyle.barcodeButtonTintColorDark()), for: .normal)
+        } else {
+            button.setImage(image.withRenderingMode(.alwaysTemplate), for: .normal)
+            button.imageView!.tintColor = UIView().traitCollection.userInterfaceStyle == .light ? PickerStyle.barcodeButtonTintColorLight() : PickerStyle.barcodeButtonTintColorDark()
+        }
+        
+        button.addTarget(target, action: action, for: .touchUpInside)
+        button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        button.imageView?.contentMode = .scaleAspectFit
+        
+        let menuBarItem = UIBarButtonItem(customView: button)
+        menuBarItem.customView?.translatesAutoresizingMaskIntoConstraints = false
+        menuBarItem.customView?.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        menuBarItem.customView?.widthAnchor.constraint(equalToConstant: 44).isActive = true
+        
+        return menuBarItem
+    }
+}
+
+extension PickerViewController: MatchableAuthenticatedProtocol {
+    
+    func codeWasSuccessfullyMatched(vc: UIViewController, code: String) {
+        let matches = datasource.data.filter({ $0.matches(matchable: code) })
+        guard !matches.isEmpty else { return }
+        
+        vc.dismiss(animated: true) { [weak self] in
+            guard let s = self else { return }
+            if let sc = s.navigationItem.searchController {
+                sc.searchBar.text = code
+                sc.isActive = true
+                s.updateSearchResults(for: sc)
+                if matches.count == 1 {
+                    s.dismiss(animated: true) {
+                        s.delegate?.didSelectPickerData(with: matches.first!.id, pvc: s)
+                    }
+                }
+            }
+        }
+    }
+    
+    func codeNotFound(vc: UIViewController, code: String) {
+        
+        vc.dismiss(animated: true) { [weak self] in
+            guard let s = self else { return }
+            s.delegate?.scanFailed(with: code, pvc: s)
+        }
+        
+        // do something?
+        if let d = delegate {
+            d.scanFailed(with: code, pvc: self)
+        }
     }
 }

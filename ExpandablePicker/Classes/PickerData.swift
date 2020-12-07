@@ -38,6 +38,10 @@ public struct PickerDataSource {
         
         return root
     }
+    
+    func usesScanning() -> Bool {
+        return !data.filter({ $0.scanMatchables != nil }).isEmpty
+    }
 }
 
 public class PickerData: Equatable {
@@ -49,6 +53,7 @@ public class PickerData: Equatable {
         copy.visible = visible
         copy.indentImageNormal = indentImageNormal
         copy.indentImageExpanded = indentImageExpanded
+        copy.scanMatchables = scanMatchables
         return copy
     }
     
@@ -65,13 +70,31 @@ public class PickerData: Equatable {
     var visible: Bool = false
     var row: Int = -1
     var indent: Int = -1
+    var scanMatchables: [String]?
     
-    public init(id: String, title: String, parentId: String?, indentImageNormal: UIImage? = nil, indentImageExpanded: UIImage? = nil) {
+    func matches(matchable: String) -> Bool {
+        
+        if title.lowercased().contains(matchable.lowercased()) {
+            return true
+        }
+        if let scanMatchables = scanMatchables {
+            for m in scanMatchables {
+                if m.lowercased().contains(matchable.lowercased()) {
+                    return true
+                }
+            }
+        }
+        
+        return false
+    }
+    
+    public init(id: String, title: String, parentId: String?, indentImageNormal: UIImage? = nil, indentImageExpanded: UIImage? = nil, scanMatchables: [String]? = nil) {
         self.id = id
         self.title = title
         self.parentId = parentId
         self.indentImageNormal = indentImageNormal
         self.indentImageExpanded = indentImageExpanded
+        self.scanMatchables = scanMatchables
     }
 }
 
