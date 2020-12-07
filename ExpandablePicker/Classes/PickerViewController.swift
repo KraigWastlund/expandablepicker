@@ -411,7 +411,7 @@ extension UIBarButtonItem {
 
 extension PickerViewController: MatchableAuthenticatedProtocol {
     
-    func codeWasSuccessfullyMatched(vc: UIViewController, code: String) {
+    public func codeWasSuccessfullyMatched(vc: UIViewController, code: String) {
         let matches = datasource.data.filter({ $0.matches(matchable: code) })
         guard !matches.isEmpty else { return }
         
@@ -430,7 +430,7 @@ extension PickerViewController: MatchableAuthenticatedProtocol {
         }
     }
     
-    func codeNotFound(vc: UIViewController, code: String) {
+    public func codeNotFound(vc: UIViewController, code: String) {
         
         vc.dismiss(animated: true) { [weak self] in
             guard let s = self else { return }

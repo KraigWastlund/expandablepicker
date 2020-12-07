@@ -8,19 +8,19 @@
 import UIKit
 import AVFoundation
 
-protocol MatchableAuthenticatedProtocol {
+public protocol MatchableAuthenticatedProtocol {
     func codeWasSuccessfullyMatched(vc: UIViewController, code: String)
     func codeNotFound(vc: UIViewController, code: String)
 }
 
-class QRCodeBarcodeEntryViewController: UIViewController {
+public class QRCodeBarcodeEntryViewController: UIViewController {
     
     var captureSession: AVCaptureSession!
     var previewLayer: AVCaptureVideoPreviewLayer!
     let videoContainerView = VideoContainerView()
     let flashView = UIView()
     
-    var delegate: MatchableAuthenticatedProtocol?
+    public var delegate: MatchableAuthenticatedProtocol?
     var foundCount = 0
     
     var matchables = [String]()
@@ -37,7 +37,7 @@ class QRCodeBarcodeEntryViewController: UIViewController {
         self.previewLayer = nil
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         captureSession = AVCaptureSession()
@@ -46,7 +46,7 @@ class QRCodeBarcodeEntryViewController: UIViewController {
         setup()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if (captureSession?.isRunning == false) {
@@ -56,7 +56,7 @@ class QRCodeBarcodeEntryViewController: UIViewController {
         setOrientation()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         if (captureSession?.isRunning == true) {
@@ -64,7 +64,7 @@ class QRCodeBarcodeEntryViewController: UIViewController {
         }
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         setOrientation()
@@ -246,7 +246,7 @@ extension QRCodeBarcodeEntryViewController {
 // MARK: delegate
 extension QRCodeBarcodeEntryViewController: AVCaptureMetadataOutputObjectsDelegate {
     
-    func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+    private func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         
         captureSession.stopRunning()
         
