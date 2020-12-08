@@ -12,7 +12,7 @@
 - Sorting happens for you (alphabetically ascending).
 - Can be presented Modal/Push.
 - Color of Chevron Button can be customized.
-- Pick from three built in styling options:
+- Pick from three built in styling options:  
   - Line
   - Arrow (no indent image on root level)
   - None (no indentation image)
@@ -21,6 +21,7 @@
 - Colors of indentation image can be customized for each level of indentation.
 - Works in Dark mode and Light.
 - Works in landscape and portrait.
+- Barcode / QRCode Scanning!  
 
 ## Example
 
@@ -73,6 +74,8 @@ class ViewController: UIViewController {
         let emperorsThroneRoom = Project(id: "11", title: "Emperor's Throne Room", parentId: "1")
         let tractorBeamControl = Project(id: "12", title: "Tractor Beam Control", parentId: "1")
         let hangar272 = Project(id: "13", title: "Hangar 272", parentId: "1")
+        
+        // if you want barcode / qr code scanning, add `scanMatchable:` paramter.  (any string you pass in that array will match barcode/qrcode)
         
         // does not matter what order items are placed
         myPretendData.append(contentsOf: [hangar272, cellaa23, detentionBlock, tractorBeamControl, deathStar, emperorsThroneRoom])
