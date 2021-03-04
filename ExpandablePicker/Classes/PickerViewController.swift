@@ -24,7 +24,7 @@ public class PickerViewController: UIViewController, UISearchResultsUpdating {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         setup()
     }
     
@@ -55,6 +55,7 @@ public class PickerViewController: UIViewController, UISearchResultsUpdating {
         search.obscuresBackgroundDuringPresentation = false
         search.searchBar.placeholder = "search"
         search.definesPresentationContext = true
+        search.searchBar.autocapitalizationType = .none
         navigationItem.searchController = search
         definesPresentationContext = true
         navigationItem.hidesSearchBarWhenScrolling = false
@@ -65,20 +66,20 @@ public class PickerViewController: UIViewController, UISearchResultsUpdating {
         
         if #available(iOS 13, *) {
             // do nothing :)
-        } else if self.isModal {    
+        } else if self.isModal {
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(closeViewController))
         }
     }
     
     @objc func barcodePressed() {
         #if targetEnvironment(simulator)
-            print("SIMULATOR -- NO SCANNING POSSIBLE.")
-            return
+        print("SIMULATOR -- NO SCANNING POSSIBLE.")
+        return
         #else
-            let matchables = Array(datasource.data.compactMap({ $0.scanMatchables }).joined())
-            let barcodeScanner = QRCodeBarcodeEntryViewController(matchables: matchables, title: NSLocalizedString("Scan", comment: ""))
-            barcodeScanner.delegate = self
-            self.present(barcodeScanner, animated: true, completion: nil)
+        let matchables = Array(datasource.data.compactMap({ $0.scanMatchables }).joined())
+        let barcodeScanner = QRCodeBarcodeEntryViewController(matchables: matchables, title: NSLocalizedString("Scan", comment: ""))
+        barcodeScanner.delegate = self
+        self.present(barcodeScanner, animated: true, completion: nil)
         #endif
     }
     
@@ -88,16 +89,16 @@ public class PickerViewController: UIViewController, UISearchResultsUpdating {
     
     @objc func adjustForKeyboard(notification: Notification) {
         guard let keyboardValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-
+        
         let keyboardScreenEndFrame = keyboardValue.cgRectValue
         let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
-
+        
         if notification.name == UIResponder.keyboardWillHideNotification {
             tableView.contentInset = .zero
         } else {
             tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: 0)
         }
-
+        
         tableView.scrollIndicatorInsets = tableView.contentInset
     }
     
@@ -203,8 +204,8 @@ public class PickerViewController: UIViewController, UISearchResultsUpdating {
         }
         
         // filter by text
-        let _ = datasource.data.map({ $0.visible = false }) // mark all as hidden
-        let _ = datasource.data.filter({ $0.matches(matchable: text) }).map({ $0.visible = true }) // mark those that match search visible
+        let _ = datasource.data.map({ $0.visible = false; $0.match(matchable: text) }) // mark all as hidden
+        let _ = datasource.data.filter({ $0.matchLevel != .none }).map({ $0.visible = true }) // mark those that match search visible
         
         // mark all parents and grandparents visible to children who are visible
         let visibleChildren = datasource.data.filter({ $0.visible == true && $0.parentId != nil })
@@ -250,8 +251,14 @@ extension PickerViewController: UITableViewDataSource, UITableViewDelegate {
         if let c = navigationItem.searchController, let t = c.searchBar.text, !t.isEmpty {
             let attributedNumberString = NSMutableAttributedString(string: data.title)
             let numberRanges = data.title.ranges(of: t, options: .caseInsensitive)
-            for range in numberRanges {
-                attributedNumberString.addAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: data.title.nsRange(from: range))
+            if numberRanges.isEmpty {
+                if data.matchLevel == .low, let range = data.title.range(of: data.title) {
+                    attributedNumberString.addAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: data.title.nsRange(from: range))
+                }
+            } else {
+                for range in numberRanges {
+                    attributedNumberString.addAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: data.title.nsRange(from: range))
+                }
             }
             cell.label.attributedText = attributedNumberString
         }
@@ -292,11 +299,11 @@ extension PickerViewController: PickerCellSelectionProtocol {
 extension PickerViewController {
     
     struct PickerDataComparable: Hashable {
-
+        
         static func == (lhs: PickerDataComparable, rhs: PickerDataComparable) -> Bool {
             return lhs.id == rhs.id && lhs.indexPath == rhs.indexPath
         }
-
+        
         let id: String
         let indexPath: IndexPath
         let title: String
@@ -305,7 +312,7 @@ extension PickerViewController {
     func respondToUserClick(on pickerData: PickerData, isExpanding: Bool) {
         
         let oldData = datasource.data.map({ $0.copy() })
-    
+        
         if isExpanding { // if expanding -> mark children visible
             let row = pickerData.row + 1
             for i in row..<datasource.data.count {
@@ -331,14 +338,14 @@ extension PickerViewController {
     }
     
     func expandableReload(oldComps: inout [PickerDataComparable], newComps: inout [PickerDataComparable]) {
-
+        
         var indexPathsToInsert = [IndexPath]()
         var indexPathsToDelete = [IndexPath]()
-
+        
         while !newComps.isEmpty {
             let currentComp = oldComps.first
             let correctComp = newComps.first!
-
+            
             if currentComp?.id == correctComp.id {
                 oldComps.removeFirst()
                 newComps.removeFirst()
@@ -350,9 +357,9 @@ extension PickerViewController {
                 newComps.removeFirst()
             }
         }
-
+        
         indexPathsToDelete.append(contentsOf: oldComps.map({ $0.indexPath })) // if i have any objects left here, they need to be deleted (collapse bottom cell's children)
-
+        
         if !indexPathsToDelete.isEmpty {
             tableView.deleteRows(at: indexPathsToDelete, with: .fade)
         }
@@ -369,7 +376,7 @@ extension String {
         
         var ranges: [Range<Index>] = []
         while ranges.last.map({ $0.upperBound < self.endIndex }) ?? true,
-            let range = self.range(of: substring, options: options, range: (ranges.last?.upperBound ?? self.startIndex)..<self.endIndex, locale: locale)
+              let range = self.range(of: substring, options: options, range: (ranges.last?.upperBound ?? self.startIndex)..<self.endIndex, locale: locale)
         {
             ranges.append(range)
         }
@@ -412,7 +419,9 @@ extension UIBarButtonItem {
 extension PickerViewController: MatchableAuthenticatedProtocol {
     
     public func codeWasSuccessfullyMatched(vc: UIViewController, code: String) {
-        let matches = datasource.data.filter({ $0.matches(matchable: code) })
+        let _ = datasource.data.map({ $0.match(matchable: code) })
+        let matches = datasource.data.filter({ $0.matchLevel != .none })
+        let singularMatch = matches.filter({ $0.matchLevel == .high }).first
         guard !matches.isEmpty else { return }
         
         vc.dismiss(animated: true) { [weak self] in
@@ -421,7 +430,11 @@ extension PickerViewController: MatchableAuthenticatedProtocol {
                 sc.searchBar.text = code
                 sc.isActive = true
                 s.updateSearchResults(for: sc)
-                if matches.count == 1 {
+                if let sm = singularMatch {
+                    s.dismiss(animated: true) {
+                        s.delegate?.didSelectPickerData(with: sm.id, pvc: s)
+                    }
+                } else if matches.count == 1 {
                     s.dismiss(animated: true) {
                         s.delegate?.didSelectPickerData(with: matches.first!.id, pvc: s)
                     }

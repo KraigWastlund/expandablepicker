@@ -46,6 +46,12 @@ public struct PickerDataSource {
 
 public class PickerData: Equatable {
     
+    enum MatchLevel: Int {
+        case none = -1
+        case low = 0
+        case high = 1
+    }
+    
     func copy(with zone: NSZone? = nil) -> PickerData {
         let copy = PickerData(id: id, title: title, parentId: parentId, indentImageNormal: indentImageNormal, indentImageExpanded: indentImageExpanded)
         copy.indent = indent
@@ -54,6 +60,7 @@ public class PickerData: Equatable {
         copy.indentImageNormal = indentImageNormal
         copy.indentImageExpanded = indentImageExpanded
         copy.scanMatchables = scanMatchables
+        copy.matchLevel = matchLevel
         return copy
     }
     
@@ -71,21 +78,29 @@ public class PickerData: Equatable {
     var row: Int = -1
     var indent: Int = -1
     var scanMatchables: [String]?
+    var matchLevel: MatchLevel = .none
     
-    func matches(matchable: String) -> Bool {
+    func match(matchable: String) {
         
-        if title.lowercased().contains(matchable.lowercased()) {
-            return true
-        }
         if let scanMatchables = scanMatchables {
             for m in scanMatchables {
+                if m == matchable {
+                    matchLevel = .high
+                    return
+                }
                 if m.lowercased().contains(matchable.lowercased()) {
-                    return true
+                    matchLevel = .low
+                    return
                 }
             }
         }
+        if title.lowercased().contains(matchable.lowercased()) {
+            matchLevel = .low
+            return
+        }
         
-        return false
+        matchLevel = .none
+        return
     }
     
     public init(id: String, title: String, parentId: String?, indentImageNormal: UIImage? = nil, indentImageExpanded: UIImage? = nil, scanMatchables: [String]? = nil) {

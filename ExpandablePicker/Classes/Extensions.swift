@@ -33,7 +33,7 @@ extension UINavigationController {
     
     public func pushViewController(viewController: UIViewController, animated: Bool, completion: @escaping (() -> Void)) {
         pushViewController(viewController, animated: animated)
-
+        
         if let coordinator = transitionCoordinator, animated {
             coordinator.animate(alongsideTransition: nil) { _ in
                 completion()
@@ -42,10 +42,10 @@ extension UINavigationController {
             completion()
         }
     }
-
+    
     public func popViewController(animated: Bool, completion: @escaping (() -> Void)) {
         popViewController(animated: animated)
-
+        
         if let coordinator = transitionCoordinator, animated {
             coordinator.animate(alongsideTransition: nil) { _ in
                 completion()
@@ -57,12 +57,33 @@ extension UINavigationController {
 }
 
 extension UIColor {
+    
     static func ios13LabelColor() -> UIColor {
+        // if user has set a custom text color in the nav bar - use it
+        if let color = UINavigationBar.appearance().titleTextAttributes?[NSAttributedString.Key.foregroundColor] as? UIColor {
+            return color
+        }
         if UIScreen.main.traitCollection.userInterfaceStyle == .light {
             return .darkText
         } else {
             return .lightText
         }
+    }
+    
+    
+    static func blend(color1: UIColor, intensity1: CGFloat = 0.5, color2: UIColor, intensity2: CGFloat = 0.5) -> UIColor {
+        let total = intensity1 + intensity2
+        let l1 = intensity1/total
+        let l2 = intensity2/total
+        guard l1 > 0 else { return color2}
+        guard l2 > 0 else { return color1}
+        var (r1, g1, b1, a1): (CGFloat, CGFloat, CGFloat, CGFloat) = (0, 0, 0, 0)
+        var (r2, g2, b2, a2): (CGFloat, CGFloat, CGFloat, CGFloat) = (0, 0, 0, 0)
+        
+        color1.getRed(&r1, green: &g1, blue: &b1, alpha: &a1)
+        color2.getRed(&r2, green: &g2, blue: &b2, alpha: &a2)
+        
+        return UIColor(red: l1*r1 + l2*r2, green: l1*g1 + l2*g2, blue: l1*b1 + l2*b2, alpha: l1*a1 + l2*a2)
     }
 }
 
@@ -121,54 +142,54 @@ extension UIViewController {
 
 class EPSizeManager {
     
-// Family & Model            Logical Width    Logical Height    Physical Width    Physical Height    PPI    Retina Factor    Release
-// iPhone 11 Pro Max              414               896              1242               2688         458          3         2019-09-20
-// iPhone 11 Pro                  375               812              1125               2436         458          3         2019-09-20
-// iPhone 11                      414               896              828                1792         326          2         2019-09-20
-// iPhone XR                      414               896              828                1792         326          2         2018-10-26
-// iPhone XS Max                  414               896              1242               2688         458          3         2018-09-21
-// iPhone XS                      375               812              1125               2436         458          3         2018-09-21
-// iPhone X                       375               812              1125               2436         458          3         2017-11-03
-// iPhone 8 Plus                  414               736              1242               2208         401          3         2017-09-22
-// iPhone 8                       375               667              750                1334         326          2         2017-09-22
-// iPhone 7 Plus                  414               736              1242               2208         401          3         2016-09-16
-// iPhone 7                       375               667              750                1334         326          2         2016-09-16
-// iPhone SE                      320               568              640                1136         326          2         2016-03-31
-// iPhone 6s Plus                 414               736              1242               2208         401          3         2015-09-25
-// iPhone 6s                      375               667              750                1334         326          2         2015-09-25
-// iPhone 6 Plus                  414               736              1242               2208         401          3         2014-09-19
-// iPhone 6                       375               667              750                1334         326          2         2014-09-19
-// iPhone 5c                      320               568              640                1136         326          2         2013-09-20
-// iPhone 5s                      320               568              640                1136         326          2         2013-09-20
-// iPhone 5                       320               568              640                1136         326          2         2012-09-21
-// iPhone 4S                      320               480              640                960          326          2         2011-10-14
-// iPhone 4                       320               480              640                960          326          2         2010-06-21
-// iPhone 3GS                     320               480              320                480          163          1         2009-06-19
-// iPhone 3G                      320               480              320                480          163          1         2008-07-11
-// iPhone 1st gen                 320               480              320                480          163          1         2007-06-29
-// iPod touch 6th gen             320               568              640                1136         326          2         2015-07-15
-// iPod touch 5th gen             320               568              640                1136         326          2         2012-10-11
-// iPod touch 4th gen             320               480              640                960          326          2         2010-09-01
-// iPod touch 3rd gen             320               480              320                480          163          1         2009-09-09
-// iPod touch 2nd gen             320               480              320                480          163          1         2008-09-09
-// iPod touch 1st gen             320               480              320                480          163          1         2007-09-05
-// iPad 2018                      768               1024             1536               2048         264          2         2018-03-27
-// iPad Pro (2nd gen 12.9")       1024              1366             2048               2732         264          2         2017-06-13
-// iPad Pro (2nd gen 10.5")       834               1112             1668               2224         264          2         2017-06-13
-// iPad 2017                      768               1024             1536               2048         264          2         2017-03-24
-// iPad Pro (1st gen 9.7”)        768               1024             1536               2048         264          2         2016-03-31
-// iPad Pro (1st gen 12.9")       1024              1366             2048               2732         264          2         2015-11-11
-// iPad mini 4                    768               1024             1536               2048         326          2         2015-09-09
-// iPad Air 2                     768               1024             1536               2048         326          2         2014-10-22
-// iPad mini 3                    768               1024             1536               2048         264          2         2014-10-22
-// iPad mini 2                    768               1024             1536               2048         326          2         2013-11-12
-// iPad Air                       768               1024             1536               2048         264          2         2013-11-01
-// iPad 4th gen                   768               1024             1536               2048         264          2         2012-11-12
-// iPad mini                      768               1024             768                1024         163          1         2012-11-02
-// iPad 3rd gen                   768               1024             1536               2048         264          2         2012-03-16
-// iPad 2                         768               1024             768                1024         132          1         2011-03-11
-// iPad 1st gen                   768               1024             768                1024         132          1         2010-04-03
-   
+    // Family & Model            Logical Width    Logical Height    Physical Width    Physical Height    PPI    Retina Factor    Release
+    // iPhone 11 Pro Max              414               896              1242               2688         458          3         2019-09-20
+    // iPhone 11 Pro                  375               812              1125               2436         458          3         2019-09-20
+    // iPhone 11                      414               896              828                1792         326          2         2019-09-20
+    // iPhone XR                      414               896              828                1792         326          2         2018-10-26
+    // iPhone XS Max                  414               896              1242               2688         458          3         2018-09-21
+    // iPhone XS                      375               812              1125               2436         458          3         2018-09-21
+    // iPhone X                       375               812              1125               2436         458          3         2017-11-03
+    // iPhone 8 Plus                  414               736              1242               2208         401          3         2017-09-22
+    // iPhone 8                       375               667              750                1334         326          2         2017-09-22
+    // iPhone 7 Plus                  414               736              1242               2208         401          3         2016-09-16
+    // iPhone 7                       375               667              750                1334         326          2         2016-09-16
+    // iPhone SE                      320               568              640                1136         326          2         2016-03-31
+    // iPhone 6s Plus                 414               736              1242               2208         401          3         2015-09-25
+    // iPhone 6s                      375               667              750                1334         326          2         2015-09-25
+    // iPhone 6 Plus                  414               736              1242               2208         401          3         2014-09-19
+    // iPhone 6                       375               667              750                1334         326          2         2014-09-19
+    // iPhone 5c                      320               568              640                1136         326          2         2013-09-20
+    // iPhone 5s                      320               568              640                1136         326          2         2013-09-20
+    // iPhone 5                       320               568              640                1136         326          2         2012-09-21
+    // iPhone 4S                      320               480              640                960          326          2         2011-10-14
+    // iPhone 4                       320               480              640                960          326          2         2010-06-21
+    // iPhone 3GS                     320               480              320                480          163          1         2009-06-19
+    // iPhone 3G                      320               480              320                480          163          1         2008-07-11
+    // iPhone 1st gen                 320               480              320                480          163          1         2007-06-29
+    // iPod touch 6th gen             320               568              640                1136         326          2         2015-07-15
+    // iPod touch 5th gen             320               568              640                1136         326          2         2012-10-11
+    // iPod touch 4th gen             320               480              640                960          326          2         2010-09-01
+    // iPod touch 3rd gen             320               480              320                480          163          1         2009-09-09
+    // iPod touch 2nd gen             320               480              320                480          163          1         2008-09-09
+    // iPod touch 1st gen             320               480              320                480          163          1         2007-09-05
+    // iPad 2018                      768               1024             1536               2048         264          2         2018-03-27
+    // iPad Pro (2nd gen 12.9")       1024              1366             2048               2732         264          2         2017-06-13
+    // iPad Pro (2nd gen 10.5")       834               1112             1668               2224         264          2         2017-06-13
+    // iPad 2017                      768               1024             1536               2048         264          2         2017-03-24
+    // iPad Pro (1st gen 9.7”)        768               1024             1536               2048         264          2         2016-03-31
+    // iPad Pro (1st gen 12.9")       1024              1366             2048               2732         264          2         2015-11-11
+    // iPad mini 4                    768               1024             1536               2048         326          2         2015-09-09
+    // iPad Air 2                     768               1024             1536               2048         326          2         2014-10-22
+    // iPad mini 3                    768               1024             1536               2048         264          2         2014-10-22
+    // iPad mini 2                    768               1024             1536               2048         326          2         2013-11-12
+    // iPad Air                       768               1024             1536               2048         264          2         2013-11-01
+    // iPad 4th gen                   768               1024             1536               2048         264          2         2012-11-12
+    // iPad mini                      768               1024             768                1024         163          1         2012-11-02
+    // iPad 3rd gen                   768               1024             1536               2048         264          2         2012-03-16
+    // iPad 2                         768               1024             768                1024         132          1         2011-03-11
+    // iPad 1st gen                   768               1024             768                1024         132          1         2010-04-03
+    
     private static let sharedManager = EPSizeManager() // lazy singleton
     
     var multiplier: CGFloat = 1.0
