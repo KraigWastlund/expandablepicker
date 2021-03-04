@@ -252,7 +252,7 @@ extension PickerViewController: UITableViewDataSource, UITableViewDelegate {
             let attributedNumberString = NSMutableAttributedString(string: data.title)
             let numberRanges = data.title.ranges(of: t, options: .caseInsensitive)
             if numberRanges.isEmpty {
-                if data.matchLevel == .low, let range = data.title.range(of: data.title) {
+                if data.matchLevel != .none, let range = data.title.range(of: data.title) {
                     attributedNumberString.addAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: data.title.nsRange(from: range))
                 }
             } else {
