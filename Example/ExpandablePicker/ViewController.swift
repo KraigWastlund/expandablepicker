@@ -39,7 +39,7 @@ class ViewController: UIViewController {
         
         // convert data to picker data
 //        let pickerData = myPretendData.map { (project) -> PickerData in
-//            PickerData(id: project.id, title: project.title, parentId: project.parentId)
+//            PickerData(id: project.id, attributedTitle: NSAttributedString(string: project.title), parentId: project.parentId)
 //        }
 //
 //        let vc = PickerViewController()
@@ -48,7 +48,7 @@ class ViewController: UIViewController {
 //        vc.delegate = self
 //        let nc = UINavigationController(rootViewController: vc)
 //        present(nc, animated: true, completion: nil)
-        
+//
 //        // set style
 //        PickerStyle.indentType = .line
 //        PickerStyle.set(indentImageTintColors: [.blue, .green, .yellow, .lightGray, .red])
@@ -68,7 +68,8 @@ class ViewController: UIViewController {
         var data = [PickerData]()
         for i in 0..<10 {
             let title = "Super Long Long Long Name_\(i)"
-            data.append(PickerData(id: String(i), title: title, parentId: i == 0 ? nil : String(i - 1), scanMatchables: [title, String(i), "bob_\(i)"]))
+            let attributedTitle = NSAttributedString(string: title, attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
+            data.append(PickerData(id: String(i), attributedTitle: attributedTitle, parentId: i == 0 ? nil : String(i - 1), scanMatchables: [title, String(i), "bob_\(i)"]))
         }
 
         // vanilla
@@ -128,39 +129,39 @@ class ViewController: UIViewController {
     func datasource(rootImageNormal: UIImage? = nil, rootImageExpanded: UIImage? = nil, childImageNormal: UIImage? = nil, childImageExpanded: UIImage? = nil) -> [PickerData] {
         
         // create picker data for example the old fashioned way. :)
-        let one = PickerData(id: UUID().uuidString, title: "1", parentId: nil, indentImageNormal: rootImageNormal, indentImageExpanded: rootImageExpanded)
-        let oneone = PickerData(id: UUID().uuidString, title: "1-1", parentId: one.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
-        let onetwo = PickerData(id: UUID().uuidString, title: "1-2", parentId: one.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let one = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "1", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 55, weight: .bold)]), attributedSubTitle: NSAttributedString(string: "Example of sub title", attributes: [NSAttributedString.Key.foregroundColor: UIColor.red]), parentId: nil, indentImageNormal: rootImageNormal, indentImageExpanded: rootImageExpanded)
+        let oneone = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "1-1"), parentId: one.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let onetwo = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "1-2"), parentId: one.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
         
-        let onetwoone = PickerData(id: UUID().uuidString, title: "1-2-1", parentId: onetwo.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let onetwoone = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "1-2-1"), parentId: onetwo.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
         
-        let onethree = PickerData(id: UUID().uuidString, title: "1-3", parentId: one.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
-        let onefour = PickerData(id: UUID().uuidString, title: "1-4", parentId: one.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
-        let onefive = PickerData(id: UUID().uuidString, title: "1-5", parentId: one.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
-        let onesix = PickerData(id: UUID().uuidString, title: "1-6", parentId: one.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let onethree = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "1-3"), attributedSubTitle: NSAttributedString(string: "Example of sub title", attributes: [NSAttributedString.Key.foregroundColor: UIColor.red, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 25, weight: .light)]), parentId: one.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let onefour = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "1-4"), parentId: one.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let onefive = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "1-5"), attributedSubTitle: NSAttributedString(string: "Example of sub title", attributes: [NSAttributedString.Key.foregroundColor: UIColor.red]), parentId: one.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let onesix = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "1-6"), parentId: one.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
         
-        let two = PickerData(id: UUID().uuidString, title: "2", parentId: nil, indentImageNormal: rootImageNormal, indentImageExpanded: rootImageExpanded)
-        let twoone = PickerData(id: UUID().uuidString, title: "2-1", parentId: two.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
-        let twotwo = PickerData(id: UUID().uuidString, title: "2-2", parentId: two.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let two = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "2"), parentId: nil, indentImageNormal: rootImageNormal, indentImageExpanded: rootImageExpanded)
+        let twoone = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "2-1"), parentId: two.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let twotwo = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "2-2"), parentId: two.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
         
-        let three = PickerData(id: UUID().uuidString, title: "3", parentId: nil, indentImageNormal: rootImageNormal, indentImageExpanded: rootImageExpanded)
-        let threeone = PickerData(id: UUID().uuidString, title: "3-1", parentId: three.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
-        let threetwo = PickerData(id: UUID().uuidString, title: "3-2", parentId: three.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
-        let threethree = PickerData(id: UUID().uuidString, title: "3-3", parentId: three.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let three = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "3"), attributedSubTitle: NSAttributedString(string: "Example of sub title", attributes: [NSAttributedString.Key.foregroundColor: UIColor.red]), parentId: nil, indentImageNormal: rootImageNormal, indentImageExpanded: rootImageExpanded)
+        let threeone = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "3-1"), parentId: three.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let threetwo = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "3-2"), parentId: three.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let threethree = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "3-3"), parentId: three.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
         
-        let four = PickerData(id: UUID().uuidString, title: "4", parentId: nil, indentImageNormal: rootImageNormal, indentImageExpanded: rootImageExpanded)
-        let fourone = PickerData(id: UUID().uuidString, title: "4-1", parentId: four.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
-        let fourtwo = PickerData(id: UUID().uuidString, title: "4-2", parentId: four.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
-        let fourthree = PickerData(id: UUID().uuidString, title: "4-3", parentId: four.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
-        let fourfour = PickerData(id: UUID().uuidString, title: "4-4", parentId: four.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let four = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "4"), parentId: nil, indentImageNormal: rootImageNormal, indentImageExpanded: rootImageExpanded)
+        let fourone = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "4-1"), parentId: four.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let fourtwo = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "4-2"), parentId: four.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let fourthree = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "4-3"), parentId: four.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let fourfour = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "4-4"), parentId: four.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
         
-        let project = PickerData(id: UUID().uuidString, title: "Project", parentId: nil, indentImageNormal: rootImageNormal, indentImageExpanded: rootImageExpanded)
-        let subProject1 = PickerData(id: UUID().uuidString, title: "Sub Project 1", parentId: project.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
-        let subProject2 = PickerData(id: UUID().uuidString, title: "Sub Project 2", parentId: subProject1.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
-        let subProject3 = PickerData(id: UUID().uuidString, title: "Sub Project 3", parentId: subProject2.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
-        let subProject4 = PickerData(id: UUID().uuidString, title: "Sub Project 4", parentId: subProject3.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
-        let subProject5 = PickerData(id: UUID().uuidString, title: "Sub Project 5", parentId: subProject4.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
-        let subProject6 = PickerData(id: UUID().uuidString, title: "Sub Project 6", parentId: subProject5.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let project = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "Project", attributes: [NSAttributedString.Key.foregroundColor: UIColor.red]), parentId: nil, indentImageNormal: rootImageNormal, indentImageExpanded: rootImageExpanded)
+        let subProject1 = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "Sub Project 1"), parentId: project.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let subProject2 = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "Sub Project 2"), parentId: subProject1.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let subProject3 = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "Sub Project 3"), parentId: subProject2.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let subProject4 = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "Sub Project 4"), parentId: subProject3.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let subProject5 = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "Sub Project 5"), parentId: subProject4.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
+        let subProject6 = PickerData(id: UUID().uuidString, attributedTitle: NSAttributedString(string: "Sub Project 6"), parentId: subProject5.id, indentImageNormal: childImageNormal, indentImageExpanded: childImageExpanded)
         
         return [subProject6, fourfour, fourtwo, fourone, subProject5, four, fourthree, one, oneone, subProject4, onetwo, project, onetwoone, onethree, onefour, onefive, onesix, two, subProject3, twoone, twotwo, three, threeone, threetwo, threethree, subProject2, subProject1]
     }

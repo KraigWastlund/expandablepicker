@@ -45,6 +45,8 @@ public class PickerViewController: UIViewController, UISearchResultsUpdating {
         
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.estimatedRowHeight = 44
+        tableView.rowHeight = UITableView.automaticDimension
         
         tableView.register(PickerTableViewCell.self, forCellReuseIdentifier: "cell")
         
@@ -141,12 +143,12 @@ public class PickerViewController: UIViewController, UISearchResultsUpdating {
         let initialcount = data.count
         
         var tempData = data.sorted(by: { (data1, data2) -> Bool in
-            data1.title > data2.title // sorted in reverse order for branches and leaves (**insert them in reverse order)
+            data1.attributedTitle.string > data2.attributedTitle.string // sorted in reverse order for branches and leaves (**insert them in reverse order)
         })
         
         // get root data
         data = tempData.filter({ $0.parentId == nil }).sorted(by: { (data1, data2) -> Bool in
-            data1.title < data2.title
+            data1.attributedTitle.string < data2.attributedTitle.string
         })
         
         // make all roots visible
@@ -232,10 +234,6 @@ extension PickerViewController: UITableViewDataSource, UITableViewDelegate {
         return datasource.visibleData().count
     }
     
-    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return PickerTableViewCell.cellHeight
-    }
-    
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? PickerTableViewCell else { assert(false, "something bad happened"); return UITableViewCell() }
         
@@ -249,18 +247,18 @@ extension PickerViewController: UITableViewDataSource, UITableViewDelegate {
         
         // attribute string if searching
         if let c = navigationItem.searchController, let t = c.searchBar.text, !t.isEmpty {
-            let attributedNumberString = NSMutableAttributedString(string: data.title)
-            let numberRanges = data.title.ranges(of: t, options: .caseInsensitive)
+            let attributedSearchString = NSMutableAttributedString(attributedString: data.attributedTitle)
+            let numberRanges = data.attributedTitle.string.ranges(of: t, options: .caseInsensitive)
             if numberRanges.isEmpty {
-                if data.matchLevel != .none, let range = data.title.range(of: data.title) {
-                    attributedNumberString.addAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: data.title.nsRange(from: range))
+                if data.matchLevel != .none, let range = data.attributedTitle.string.range(of: data.attributedTitle.string) {
+                    attributedSearchString.addAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: data.attributedTitle.string.nsRange(from: range))
                 }
             } else {
                 for range in numberRanges {
-                    attributedNumberString.addAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: data.title.nsRange(from: range))
+                    attributedSearchString.addAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: data.attributedTitle.string.nsRange(from: range))
                 }
             }
-            cell.label.attributedText = attributedNumberString
+            cell.label.attributedText = attributedSearchString
         }
         
         return cell
@@ -332,8 +330,8 @@ extension PickerViewController {
         }
         
         // reload
-        var oldComps = oldData.filter({ $0.visible }).enumerated().map({ PickerDataComparable(id: $1.id, indexPath: IndexPath(row: $0, section: 0), title: $1.title)})
-        var newComps = datasource.data.filter({ $0.visible }).enumerated().map({ PickerDataComparable(id: $1.id, indexPath: IndexPath(row: $0, section: 0), title: $1.title)})
+        var oldComps = oldData.filter({ $0.visible }).enumerated().map({ PickerDataComparable(id: $1.id, indexPath: IndexPath(row: $0, section: 0), title: $1.attributedTitle.string)})
+        var newComps = datasource.data.filter({ $0.visible }).enumerated().map({ PickerDataComparable(id: $1.id, indexPath: IndexPath(row: $0, section: 0), title: $1.attributedTitle.string)})
         expandableReload(oldComps: &oldComps, newComps: &newComps)
     }
     

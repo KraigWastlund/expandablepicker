@@ -8,20 +8,22 @@
 ## High Points
 - Select any item in the list.
 - Conform to delegate and get notified when something is picked.
-- Expand and Contract based on `parentId`.
+- Expand and Collapse based on `parentId`.
 - Sorting happens for you (alphabetically ascending).
 - Can be presented Modal/Push.
 - Color of Chevron Button can be customized.
 - Pick from three built in styling options:  
-  - Line
+  - Line (indentation image is a line)
   - Arrow (no indent image on root level)
   - None (no indentation image)
-  - Custom (pass your own image)
+  - Custom (pass your own indentation image)
 - Custom indentation type can have an optional 'expanded image' and animation will result.
 - Colors of indentation image can be customized for each level of indentation.
 - Works in Dark mode and Light.
 - Works in landscape and portrait.
-- Barcode / QRCode Scanning!  
+- Barcode / QRCode Scanning (pass in matchable strings per row)
+- Title and optional SubTitle per row
+- Title and SubTitle are Attributed Strings (pass in font and size of row will accomodate)
 
 ## Example
 
@@ -85,15 +87,19 @@ class ViewController: UIViewController {
         
         // convert data to picker data
         let pickerData = myPretendData.map { (project) -> PickerData in
-            PickerData(id: project.id, title: project.title, parentId: project.parentId)
+            PickerData(id: project.id, attributedTitle: NSAttributedString(string: project.title), parentId: project.parentId)
         }
-        
+
         let vc = PickerViewController()
         vc.set(title: "My Storm Trooper", subtitle: "Death to all rebels")
         vc.datasource.data = pickerData
         vc.delegate = self
         let nc = UINavigationController(rootViewController: vc)
         present(nc, animated: true, completion: nil)
+        
+        // set style
+        PickerStyle.indentType = .linei
+        PickerStyle.set(indentImageTintColors: [.blue, .green, .yellow, .lightGray, .red])
     }
 }
 

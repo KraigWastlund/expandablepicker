@@ -20,10 +20,9 @@ enum PickerCellChevronHeading {
 
 class PickerTableViewCell: UITableViewCell {
     
-    static let cellHeight: CGFloat = 44
     static let imageDim: CGFloat = 40
-    static let buttonWidth: CGFloat = 80
-    static let buttonInset: CGFloat = 26
+    static let buttonDim: CGFloat = 44
+    static let buttonInset: CGFloat = 10
     static let indentPadding: CGFloat = 24
     
     
@@ -69,8 +68,9 @@ class PickerTableViewCell: UITableViewCell {
     
     var pickerData: PickerData! {
         didSet {
-            label.attributedText = nil
-            label.text = pickerData.title
+            label.attributedText = pickerData.attributedTitle
+            sublabel.attributedText = pickerData.attributedSubTitle
+            adjustHeight()
         }
     }
     var delegate: PickerCellSelectionProtocol!
@@ -137,9 +137,13 @@ class PickerTableViewCell: UITableViewCell {
     }
     
     let label = UILabel()
+    let sublabel = UILabel()
     private let indentImageView = UIImageView()
+    
     private var imageIndentConstraint: NSLayoutConstraint!
     private var imageWidthConstraint: NSLayoutConstraint!
+    private var labelHeightConstraint: NSLayoutConstraint!
+    private var subLabelHeightConstraint: NSLayoutConstraint!
     
     private let chevronButton = UIButton(type: .custom)
     
@@ -167,6 +171,11 @@ class PickerTableViewCell: UITableViewCell {
         label.textAlignment = .left
         label.adjustsFontSizeToFitWidth = true
         
+        sublabel.translatesAutoresizingMaskIntoConstraints = false
+        sublabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        sublabel.textAlignment = .left
+        sublabel.adjustsFontSizeToFitWidth = true
+        
         indentImageView.translatesAutoresizingMaskIntoConstraints = false
         indentImageView.contentMode = .scaleAspectFit
         indentImageView.clipsToBounds = true
@@ -178,28 +187,43 @@ class PickerTableViewCell: UITableViewCell {
             chevronButton.setImage(UIImage.chevron().withRenderingMode(.alwaysTemplate), for: .normal)
             chevronButton.imageView!.tintColor = traitCollection.userInterfaceStyle == .light ? PickerStyle.chevronButtonTintColorLight() : PickerStyle.chevronButtonTintColorDark()
         }
+
         chevronButton.imageView!.contentMode = .scaleAspectFit
         chevronButton.imageView!.clipsToBounds = true
         chevronButton.imageEdgeInsets = UIEdgeInsets(top: PickerTableViewCell.buttonInset, left: PickerTableViewCell.buttonInset, bottom: PickerTableViewCell.buttonInset, right: PickerTableViewCell.buttonInset)
         chevronButton.addTarget(self, action: #selector(chevronPressed), for: .touchUpInside)
         
         contentView.addSubview(label)
+        contentView.addSubview(sublabel)
         contentView.addSubview(indentImageView)
         contentView.addSubview(chevronButton)
         
-        let views = [ "image": indentImageView, "label": label, "button": chevronButton ]
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:[image][label]-[button(\(PickerTableViewCell.buttonWidth))]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[image(\(PickerTableViewCell.imageDim))]", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[button(\(PickerTableViewCell.buttonWidth))]", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
-        contentView.addConstraint(NSLayoutConstraint.init(item: indentImageView, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0.0))
-        contentView.addConstraint(NSLayoutConstraint.init(item: chevronButton, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0.0))
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[label]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
+        let views = [ "image": indentImageView, "label": label, "sublabel": sublabel, "button": chevronButton ]
+        
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:[image][label]-[button(\(PickerTableViewCell.buttonDim))]|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
+        
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[button(\(PickerTableViewCell.buttonDim))]", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[label]-(0@999)-[sublabel]-|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
+        
+        contentView.addConstraint(NSLayoutConstraint(item: indentImageView, attribute: .top, relatedBy: .equal, toItem: contentView, attribute: .top, multiplier: 1.0, constant: 0.0))
+        contentView.addConstraint(NSLayoutConstraint(item: indentImageView, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1.0, constant: 0.0))
+        
+        contentView.addConstraint(NSLayoutConstraint(item: sublabel, attribute: .left, relatedBy: .equal, toItem: label, attribute: .left, multiplier: 1.0, constant: 0.0))
+        contentView.addConstraint(NSLayoutConstraint(item: sublabel, attribute: .right, relatedBy: .equal, toItem: label, attribute: .right, multiplier: 1.0, constant: 0.0))
+        
+        contentView.addConstraint(NSLayoutConstraint(item: chevronButton, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0.0))
         
         imageIndentConstraint = NSLayoutConstraint(item: indentImageView, attribute: .left, relatedBy: .equal, toItem: contentView, attribute: .leftMargin, multiplier: 1.0, constant: 0.0)
         contentView.addConstraint(imageIndentConstraint)
         
-        imageWidthConstraint = NSLayoutConstraint(item: indentImageView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 0.0)
+        imageWidthConstraint = NSLayoutConstraint(item: indentImageView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: PickerTableViewCell.imageDim)
         contentView.addConstraint(imageWidthConstraint)
+        
+        labelHeightConstraint = NSLayoutConstraint(item: label, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 0.0)
+        contentView.addConstraint(labelHeightConstraint)
+        
+        subLabelHeightConstraint = NSLayoutConstraint(item: sublabel, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 0.0)
+        contentView.addConstraint(subLabelHeightConstraint)
     }
 
     @objc func chevronPressed() {
@@ -207,6 +231,36 @@ class PickerTableViewCell: UITableViewCell {
         chevronHeading = chevronHeading == .right ? .down : .right
         delegate.chevronWasPressed(pickerData: pickerData, isExpanding: chevronHeading == .down)
         AudioServicesPlaySystemSound(1519)
+    }
+    
+    private func adjustHeight() {
+        guard let attributedTitle = label.attributedText else { return }
+        
+        var sublabelHeight: CGFloat = 0.0
+        if let t = sublabel.attributedText, !t.string.isEmpty {
+            var range = NSMakeRange(0, t.string.count)
+            let font = t.attribute(.font, at: 0, effectiveRange: &range) as? UIFont ?? UIFont.systemFont(ofSize: 14, weight: .regular)
+            sublabelHeight = UILabel.height(text: t.string, font: font, width: sublabel.frame.width)
+        }
+        subLabelHeightConstraint.constant = sublabelHeight
+        
+        var range = NSMakeRange(0, attributedTitle.string.count)
+        let font = attributedTitle.attribute(.font, at: 0, effectiveRange: &range) as? UIFont ?? UIFont.systemFont(ofSize: 14, weight: .regular)
+        labelHeightConstraint.constant = UILabel.height(text: attributedTitle.string, font: font, width: sublabel.frame.width)
+    }
+}
+
+extension UILabel {
+    
+    static func height(text:String, font:UIFont, width:CGFloat) -> CGFloat {
+        let label:UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: width, height: CGFloat.greatestFiniteMagnitude))
+        label.numberOfLines = 0
+        label.lineBreakMode = NSLineBreakMode.byWordWrapping
+        label.font = font
+        label.text = text
+
+        label.sizeToFit()
+        return label.frame.height
     }
 }
 

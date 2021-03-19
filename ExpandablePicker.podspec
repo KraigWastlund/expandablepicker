@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'ExpandablePicker'
-    s.version          = '1.1.5'
+    s.version          = '1.1.6'
     s.summary          = 'Pick from a list of items.'
     s.description      = 'A picker selects an item from a list of items.  This picker alows for and shows heirarchical relationships within the picker and allows selection of any item in the list.'
     s.swift_version    = '4.2'

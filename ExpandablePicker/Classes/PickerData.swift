@@ -53,7 +53,7 @@ public class PickerData: Equatable {
     }
     
     func copy(with zone: NSZone? = nil) -> PickerData {
-        let copy = PickerData(id: id, title: title, parentId: parentId, indentImageNormal: indentImageNormal, indentImageExpanded: indentImageExpanded)
+        let copy = PickerData(id: id, attributedTitle: attributedTitle, attributedSubTitle: attributedSubTitle, parentId: parentId, indentImageNormal: indentImageNormal, indentImageExpanded: indentImageExpanded)
         copy.indent = indent
         copy.row = row
         copy.visible = visible
@@ -70,7 +70,8 @@ public class PickerData: Equatable {
     }
     
     public let id: String
-    let title: String
+    let attributedTitle: NSAttributedString
+    let attributedSubTitle: NSAttributedString?
     let parentId: String?
     var indentImageNormal: UIImage?
     var indentImageExpanded: UIImage?
@@ -94,7 +95,7 @@ public class PickerData: Equatable {
                 }
             }
         }
-        if title.lowercased().contains(matchable.lowercased()) {
+        if attributedTitle.string.lowercased().contains(matchable.lowercased()) {
             matchLevel = .low
             return
         }
@@ -103,9 +104,10 @@ public class PickerData: Equatable {
         return
     }
     
-    public init(id: String, title: String, parentId: String?, indentImageNormal: UIImage? = nil, indentImageExpanded: UIImage? = nil, scanMatchables: [String]? = nil) {
+    public init(id: String, attributedTitle: NSAttributedString, attributedSubTitle: NSAttributedString? = nil, parentId: String?, indentImageNormal: UIImage? = nil, indentImageExpanded: UIImage? = nil, scanMatchables: [String]? = nil) {
         self.id = id
-        self.title = title
+        self.attributedTitle = attributedTitle
+        self.attributedSubTitle = attributedSubTitle
         self.parentId = parentId
         self.indentImageNormal = indentImageNormal
         self.indentImageExpanded = indentImageExpanded
